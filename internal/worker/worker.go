@@ -77,12 +77,8 @@ func (r Runner) process(ctx context.Context, max, batch int) error {
 			}
 			continue
 		}
-		completionErr := r.Store.MarkJobDone(ctx, job.ID)
-		if completionErr != nil {
-			if r.Logger != nil {
-				r.Logger.Error("worker completion update failed", "error", completionErr, "job_id", job.ID)
-			}
-			continue
+		if err := r.Store.MarkJobDone(ctx, job.ID); err != nil {
+			return err
 		}
 	}
 	return nil
